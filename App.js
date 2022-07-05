@@ -1,36 +1,42 @@
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
-import {StatusBar, StyleSheet, Text, View, SafeAreaView, Platform } from 'react-native';
+import { RestaurantsScreen } from './src/features/restaurants/screens/restaurants.screen';
+import { ThemeProvider } from 'styled-components/native';
+import { Text } from 'react-native';
+import { theme } from './src/infrastructure/theme';
+import { useFonts as useOswald, Oswald_400Regular} from '@expo-google-fonts/oswald';
+import { useFonts as useLato , Lato_400Regular, Lato_700Bold} from '@expo-google-fonts/lato';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeArea } from './src/components/utility/safe-area.component';
 
-const isAndroid = Platform.OS === 'android';
+const Tab = createBottomTabNavigator();
+
+const Settings = () =><SafeArea><Text>Settings</Text></SafeArea> 
+const Map = () => <SafeArea><Text>Map</Text></SafeArea> 
+
 
 export default function App() {
+
+let [oswaldLoaded] = useOswald({Oswald_400Regular})
+let [latoLoaded] = useLato({Lato_400Regular, Lato_700Bold})
+
+if (!oswaldLoaded || !latoLoaded) {
+  return null
+}
+
   return (
     <>
-    <SafeAreaView style={styles.appContainer}>
-      <View style={styles.searchContainer}>
-          <Text>search</Text>
-      </View>
-      <View style={styles.listContainer}>
-        <Text>List!!</Text>
-            </View>
-    </SafeAreaView>
+    <ThemeProvider theme={theme}>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
+          <Tab.Screen name="Map" component={Map} />
+          <Tab.Screen name="Settings" component={Settings} />
+        </Tab.Navigator>
+      
+      </NavigationContainer>
+    </ThemeProvider>
     <ExpoStatusBar style='auto'/>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  appContainer: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight,
-  },
- searchContainer: {
-  backgroundColor: 'green',
-  padding: 16,
- },
- listContainer: {
-  backgroundColor: 'blue',
-  flex: 1,
-  padding: 16,
- }
-});
